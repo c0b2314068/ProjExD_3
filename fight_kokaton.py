@@ -221,6 +221,7 @@ def main():
             if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
                 beam = Beam(bird)
                 beams.append(beam)
+            #Vキーを押すと大きなビームを発射する
             if event.type == pg.KEYDOWN and event.key == pg.K_v:
                 beam = Beam(bird, True)
                 beams.append(beam)        
