@@ -9,7 +9,7 @@ import pygame as pg
 # WIDTH = 1600  # ゲームウィンドウの幅
 # HEIGHT = 900  # ゲームウィンドウの高さ
 WIDTH, HEIGHT = 1024, 576
-NUMS_OF_BOMBS = 3
+NUMS_OF_BOMBS = 5
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -125,8 +125,6 @@ class Bomb:
 
 
 class Beam:
-    """
-    """
     img = pg.transform.rotozoom(pg.image.load("fig/beam.png"), 0, 2.0)
     def __init__(self, bird : Bird):
         self.vx, self.vy = bird.dire
@@ -212,14 +210,14 @@ def main():
                     bird.change_img(6, screen)
                     explosion = Explosion(bomb)
                     explosions.append(explosion)
-                    score.score += 1
                     beams[j] = None
                     bombs[i] = None
+                    score.score += 1
         
         for i, beam in enumerate(beams):
             if beam == None:
                 continue
-            if check_bound(beam.rct)   != (True, True):
+            if check_bound(beam.rct) != (True, True):
                 beams[i] = None
 
         bombs = [bomb for bomb in bombs if bomb is not None]
