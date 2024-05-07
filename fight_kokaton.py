@@ -125,8 +125,15 @@ class Bomb:
 
 
 class Beam:
+    """
+    ビームに関するクラス
+    """
     img = pg.transform.rotozoom(pg.image.load("fig/beam.png"), 0, 2.0)
     def __init__(self, bird : Bird):
+        """
+        引数に基づきビームSurfaceを生成する
+        引数 bird：Birdクラス
+        """
         self.vx, self.vy = bird.dire
         self.degree = math.degrees(math.atan2(-self.vy, self.vx))
         self.img = pg.transform.rotozoom(__class__.img, self.degree, 1.0)
@@ -135,27 +142,49 @@ class Beam:
         self.rct.centery = bird.rct.centery + bird.rct.height * self.vy / 5
     
     def update(self, screen : pg.Surface):
+        """
+        ビームを速度ベクトルself.vx, self.vyに基づき移動させる
+        引数 screen：画面Surface
+        """
         if (check_bound(self.rct) == (True, True)):
             self.rct.move_ip(self.vx, self.vy)
             screen.blit(self.img, self.rct)
 
 
 class Explosion:
+    """
+    爆発に関するクラス
+    """
     def __init__(self, bomb : Bomb):
+        """
+        爆弾の位置に爆発Surfaceを生成する
+        引数 bomb：Bombクラス
+        """
         img0 = pg.image.load("fig/explosion.gif")
         img = pg.transform.flip(img0, True, True)
         self.imgs = [img0, img]
         self.rct = img0.get_rect()
         self.rct.center = bomb.rct.center
-        self.life = 50
+        self.life = 150
 
     def update(self, screen : pg.Surface):
+        """
+        爆発の寿命をtickごとに減らす
+        10tickごとに表示する爆発を変更する
+        引数 screen：画面Surface
+        """
         self.life -= 1
         screen.blit(self.imgs[self.life // 10 % 2], self.rct)
 
 
 class Score:
+    """
+    スコアに関するクラス
+    """
     def __init__(self):
+        """
+        スコアのフォント/色/位置/初期値を設定
+        """
         self.fonto = pg.font.SysFont("hgp創英角ﾎﾟｯﾌﾟ体", 30)
         self.color = (0, 0, 255)
         self.score = 0
@@ -164,6 +193,9 @@ class Score:
         self.rct.center = (100, HEIGHT-50)
 
     def update(self, screen : pg.Surface):
+        """
+        スコアSurfaceを更新してスクリーンにblitする
+        """
         self.img = self.fonto.render(f"Score:{self.score}", 0, self.color)
         screen.blit(self.img, self.rct)
 
@@ -173,8 +205,8 @@ def main():
     bg_img = pg.image.load("fig/pg_bg.jpg")
     bird = Bird((900, 400))
     bombs = [Bomb() for _ in range(NUMS_OF_BOMBS)]
-    beams = []
-    explosions = []
+    beams : list[Beam] = []
+    explosions : list[Explosion] = []
     score = Score()
     clock = pg.time.Clock()
     tmr = 0
