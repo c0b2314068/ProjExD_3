@@ -170,7 +170,7 @@ def main():
     bg_img = pg.image.load("fig/pg_bg.jpg")
     bird = Bird((900, 400))
     bombs = [Bomb() for _ in range(NUMS_OF_BOMBS)]
-    beam = None
+    beams = []
     explosions = []
     score = Score()
     clock = pg.time.Clock()
@@ -181,6 +181,7 @@ def main():
                 return
             if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
                 beam = Beam(bird)
+                beams.append(beam)
         screen.blit(bg_img, [0, 0])
         
         for bomb in bombs:
@@ -199,24 +200,32 @@ def main():
                 return
 
         for i, bomb in enumerate(bombs):
-            if not (bomb and beam):
+            for j, beam in enumerate(beams):
+                if not (bomb and beam):
+                    continue
+                if beam.rct.colliderect(bomb.rct):
+                    bird.change_img(6, screen)
+                    explosion = Explosion(bomb)
+                    explosions.append(explosion)
+                    score.score += 1
+                    beams[j] = None
+                    bombs[i] = None
+        
+        for i, beam in enumerate(beams):
+            if beam == None:
                 continue
-            if beam.rct.colliderect(bomb.rct):
-                bird.change_img(6, screen)
-                explosion = Explosion(bomb)
-                explosions.append(explosion)
-                score.score += 1
-                beam = None
-                bombs[i] = None
+            if check_bound(beam.rct)   != (True, True):
+                beams[i] = None
 
         bombs = [bomb for bomb in bombs if bomb is not None]
+        beams = [beam for beam in beams if beam is not None]
         explosions = [explosion for explosion in explosions if explosion.life > 0]
 
         key_lst = pg.key.get_pressed()
         bird.update(key_lst, screen)
         for bomb in bombs:
             bomb.update(screen)
-        if beam:
+        for beam in beams:
             beam.update(screen)
         for exp in explosions:
             exp.update(screen)
