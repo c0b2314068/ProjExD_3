@@ -184,7 +184,7 @@ class Explosion:
 
 class Score:
     """
-    スコアに関するクラス
+    スコア表示に関するクラス
     """
     def __init__(self):
         """
@@ -229,6 +229,7 @@ def main():
                 beams.append(beam)        
         screen.blit(bg_img, [0, 0])
         
+        #全ての爆弾に対して衝突を判定する
         for bomb in bombs:
             if not bomb:
                 continue
