@@ -129,14 +129,17 @@ class Beam:
     ビームに関するクラス
     """
     img = pg.transform.rotozoom(pg.image.load("fig/beam.png"), 0, 2.0)
-    def __init__(self, bird : Bird):
+    def __init__(self, bird : Bird, isbig=False):
         """
         引数に基づきビームSurfaceを生成する
-        引数 bird：Birdクラス
+        isbig=Trueのとき大きさを3倍にする
+        引数 bird：Birdクラス, isbig：bool
         """
         self.vx, self.vy = bird.dire
         self.degree = math.degrees(math.atan2(-self.vy, self.vx))
         self.img = pg.transform.rotozoom(__class__.img, self.degree, 1.0)
+        if isbig:
+            self.img = pg.transform.rotozoom(self.img, 0, 3.0)
         self.rct = self.img.get_rect()
         self.rct.centerx = bird.rct.centerx + bird.rct.width * self.vx / 5
         self.rct.centery = bird.rct.centery + bird.rct.height * self.vy / 5
@@ -199,6 +202,7 @@ class Score:
         self.img = self.fonto.render(f"Score:{self.score}", 0, self.color)
         screen.blit(self.img, self.rct)
 
+
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))    
@@ -217,6 +221,9 @@ def main():
             if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
                 beam = Beam(bird)
                 beams.append(beam)
+            if event.type == pg.KEYDOWN and event.key == pg.K_v:
+                beam = Beam(bird, True)
+                beams.append(beam)        
         screen.blit(bg_img, [0, 0])
         
         for bomb in bombs:
