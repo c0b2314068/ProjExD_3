@@ -234,6 +234,7 @@ def main():
                 time.sleep(5)
                 return
 
+        #bombとbeamの全ての組み合わせについて衝突を判定
         for i, bomb in enumerate(bombs):
             for j, beam in enumerate(beams):
                 if not (bomb and beam):
@@ -246,12 +247,14 @@ def main():
                     bombs[i] = None
                     score.score += 1
         
+        #画面外に出たビームをNoneにする
         for i, beam in enumerate(beams):
             if beam == None:
                 continue
             if check_bound(beam.rct) != (True, True):
                 beams[i] = None
 
+        #Noneである要素を除いたリストを元のリストに代入
         bombs = [bomb for bomb in bombs if bomb is not None]
         beams = [beam for beam in beams if beam is not None]
         explosions = [explosion for explosion in explosions if explosion.life > 0]
