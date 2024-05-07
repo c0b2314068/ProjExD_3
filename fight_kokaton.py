@@ -5,9 +5,10 @@ import time
 import pygame as pg
 
 
-WIDTH = 1600  # ゲームウィンドウの幅
-HEIGHT = 900  # ゲームウィンドウの高さ
-NUMS_OF_BOMBS = 10
+# WIDTH = 1600  # ゲームウィンドウの幅
+# HEIGHT = 900  # ゲームウィンドウの高さ
+WIDTH, HEIGHT = 1024, 576
+NUMS_OF_BOMBS = 3
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -150,6 +151,19 @@ class Explosion:
         screen.blit(self.imgs[self.life // 10 % 2], self.rct)
 
 
+class Score:
+    def __init__(self):
+        self.fonto = pg.font.SysFont("hgp創英角ﾎﾟｯﾌﾟ体", 30)
+        self.color = (0, 0, 255)
+        self.score = 0
+        self.img = self.fonto.render(f"Score:{self.score}", 0, self.color)
+        self.rct = self.img.get_rect()
+        self.rct.center = (100, HEIGHT-50)
+
+    def update(self, screen : pg.Surface):
+        self.img = self.fonto.render(f"Score:{self.score}", 0, self.color)
+        screen.blit(self.img, self.rct)
+
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))    
@@ -158,6 +172,7 @@ def main():
     bombs = [Bomb() for _ in range(NUMS_OF_BOMBS)]
     beam = None
     explosions = []
+    score = Score()
     clock = pg.time.Clock()
     tmr = 0
     while True:
@@ -190,6 +205,7 @@ def main():
                 bird.change_img(6, screen)
                 explosion = Explosion(bomb)
                 explosions.append(explosion)
+                score.score += 1
                 beam = None
                 bombs[i] = None
 
@@ -204,6 +220,7 @@ def main():
             beam.update(screen)
         for exp in explosions:
             exp.update(screen)
+        score.update(screen)
         pg.display.update()
         tmr += 1
         clock.tick(60)
